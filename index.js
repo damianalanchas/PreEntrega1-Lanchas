@@ -1,7 +1,7 @@
 // TITULOS
 
 const contenedor = document.querySelector ("#contenedor")
-contenedor.style.backgroundColor = "#f4f1e9"
+contenedor.style.backgroundColor = "#dbdbdb"
 const contenedor1 = document.querySelector ("#contenedor1")
 const div1 = document.createElement("div")
 const h1 = document.createElement("h1")
@@ -12,6 +12,7 @@ h1.style.fontSize = "70px"
 h1.style.display = "flex"
 h1.style.justifyContent = "center"
 h1.style.marginTop = "80px"
+h1.style.color = "black"
 
 div1.appendChild (h1)
 contenedor1.appendChild (div1)
@@ -23,6 +24,7 @@ h2.style.fontFamily = "'Antonio', sans-serif"
 h2.style.fontSize = "35px"
 h2.style.display = "flex"
 h2.style.justifyContent = "center"
+h2.style.color = "black"
 
 div1.appendChild (h2)
 
@@ -33,6 +35,7 @@ p1.style.fontSize = "25px"
 p1.style.display = "flex"
 p1.style.justifyContent = "center"
 p1.style.marginTop = "50px"
+p1.style.color = "black"
 
 div1.appendChild (p1)
 
@@ -128,7 +131,8 @@ inputValorEnPesos.type = "number"
 inputValorEnPesos.id = "valorenpesosid"
 inputValorEnPesos.style.fontFamily = "'Antonio', sans-serif"
 inputValorEnPesos.style.fontSize = "25px"
-inputValorEnPesos.style.backgroundColor = "#dbdbdb"
+inputValorEnPesos.style.backgroundColor = "#cacaca"
+inputValorEnPesos.style.hover = "black" 
 inputValorEnPesos.style.border = "none"
 inputValorEnPesos.style.borderRadius = "10px"
 inputValorEnPesos.style.height = "50px"
@@ -143,6 +147,11 @@ divInputPesos.style.display = "flex"
 divInputPesos.style.justifyContent = "center"
 
 
+inputValorEnPesos.addEventListener ("click", () => { 
+    inputValorEnPesos.style.backgroundColor = "#b9b9b9"
+})
+
+
 // OBJETOS / CLASES
 
 class Moneda {
@@ -152,11 +161,47 @@ class Moneda {
     }
 }
 
-const dolar = new Moneda ("dolares", 859.50)
-const euro = new Moneda ("euros", 912.20)
-const real = new Moneda ("reales", 168.83)
-const libraEsterlina = new Moneda ("libras esterlinas", 1066.41)
+const dolar = new Moneda ("dolares",)
+const euro = new Moneda ("euros",)
+const real = new Moneda ("reales",)
+const libraEsterlina = new Moneda ("libras esterlinas",)
 
+
+// FETCH
+
+const URL = 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/'
+
+const USD_JSON = 'usd.json'
+const EUR_JSON = 'eur.json'
+const REAL_JSON = 'brl.json'
+const LIBRA_JSON = 'gbp.json'
+
+const getChanges = async () => {
+   
+    try {
+        const responseDolar = await fetch (URL + USD_JSON)
+        const dataDolar = await responseDolar.json()
+        dolar.precio = dataDolar.usd.ars.toFixed (2)
+
+        const responseEur = await fetch (URL + EUR_JSON)
+        const dataEur = await responseEur.json()
+        euro.precio = dataEur.eur.ars.toFixed (2)
+
+        const responseReal = await fetch (URL + REAL_JSON)
+        const dataReal = await responseReal.json()
+        real.precio = dataReal.brl.ars.toFixed (2)
+
+        const responseLibra = await fetch (URL + LIBRA_JSON)
+        const dataLibra = await responseLibra.json()
+        libraEsterlina.precio = dataLibra.gbp.ars.toFixed (2)
+    }
+
+    catch (e){
+        console.log (e)
+    }
+}
+
+getChanges ()
 
 //FUNCION
 
@@ -168,7 +213,7 @@ function conversionMoneda (pesosArgentinos, valorMoneda, moneda){
     span.innerText = ("\n $" + inputValorEnPesos.value + " equivalen a " + (pesosArgentinos / valorMoneda).toFixed(2) + " " + moneda)
     span.style.fontFamily = "'Antonio', sans-serif"
     span.style.fontSize = "25px"
-    span.style.color = "#b46230"
+    span.style.color = "#3175a0"
     span.style.display = "flex"
     span.style.justifyContent = "center"
     contenedor2.appendChild (span)
@@ -190,11 +235,12 @@ function conversionMoneda (pesosArgentinos, valorMoneda, moneda){
     const historialRecuperado = JSON.parse (localStorage.getItem ("Conversion")) 
 }
 
-//BOTON
+//BOTON COVERTIR
 
+const divBotones = document.createElement ("div")
 const divBoton = document.createElement ("div")
-divBoton.style.display = "flex"
-divBoton.style.justifyContent = "center"
+divBotones.style.display = "flex"
+divBotones.style.justifyContent = "center"
 const botonConvertir = document.createElement ("input")
 botonConvertir.type = "button"
 botonConvertir.value = "Convertir"
@@ -208,8 +254,10 @@ botonConvertir.style.color = "#f4f1e9"
 botonConvertir.style.fontFamily = "'Antonio', sans-serif"
 botonConvertir.style.fontSize = "20px"
 botonConvertir.style.marginTop = "40px"
+botonConvertir.style.marginRight = "40px"
 
-contenedor2.appendChild (divBoton)
+contenedor2.appendChild (divBotones)
+divBotones.appendChild (divBoton)
 divBoton.appendChild (botonConvertir)
 
 botonConvertir.addEventListener ("click", () => { 
@@ -230,4 +278,50 @@ botonConvertir.addEventListener ("click", () => {
         conversionMoneda (inputValorEnPesos.value, libraEsterlina.precio, libraEsterlina.nombre)
     }
 
+})
+
+// BOTON RESETEAR
+
+const divBoton2 = document.createElement ("div")
+const botonResetear = document.createElement ("input")
+botonResetear .type = "button"
+botonResetear.value = "Resetear"
+botonResetear.id = "botonid"
+botonResetear.style.backgroundColor = "#4b4b4b";
+botonResetear.style.width = "150px";
+botonResetear.style.height = "40px";
+botonResetear.style.border = "none";
+botonResetear.style.borderRadius = "10px";
+botonResetear.style.color = "#f4f1e9"
+botonResetear.style.fontFamily = "'Antonio', sans-serif"
+botonResetear.style.fontSize = "20px"
+botonResetear.style.marginTop = "40px"
+
+divBotones.appendChild (divBoton2)
+divBoton2.appendChild (botonResetear)
+
+botonResetear.addEventListener ("click", () => { 
+    Swal.fire({
+        title: "Estas seguro que queres resetear las conversiones?",
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: "Resetear",
+        denyButtonText: `No resetear`
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire("Reseteado!", "", "success");
+            localStorage.clear (historial);
+            
+            const historialSpan = contenedor2.querySelectorAll("span");
+            historialSpan.forEach((span) => {
+                span.remove();
+            });
+
+            inputValorEnPesos.value = '';
+        }
+        else if (result.isDenied) {
+          Swal.fire("No se han reseteado las conversiones.", "", "info");
+        }
+      });
 })
